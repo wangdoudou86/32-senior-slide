@@ -1,0 +1,15 @@
+*{margin:0;padding:0;box-sizing: border-box;} /*让边框包括border*/
+.window{
+   width:400px;
+   height: 300px;
+   margin:20px auto;
+   overflow: hidden;
+}
+.images{
+   display: flex;
+   transition: all 1s;
+}
+.images > img {
+    width:100%;/*让每个图片和他的粑粑一样宽*/ 
+    
+    }
