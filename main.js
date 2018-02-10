@@ -17,42 +17,32 @@ function makefakeSlides(){
     $slides.prepend($lastCopy)
 }
 
-function bindEvents(){
-    $buttons.eq(0).on('click',function(){
-        if(current == 3){
-            console.log('这是从最后一张到第一张')
-            $slides.css({transform:'translateX(-2000px)'}).one('transitionend', function(){//！！！注意transition添加在谁身上
-                $slides.hide()
-                $slides.offset() // .offset() 可以触发 re-layout，这是一个高级技术，删掉这行就会发现 bug，所以只能加上这一行
-                // 自己注释掉上面一行看最后一张到第一张的动画，就知道为什么要加 offset() 了
-                $slides.css({transform:'translateX(-400px)'}).show()
-            })       
-        }else{
-            $slides.css({transform:'translateX(-400px)'})
-        }
-        current = 0
-    })
-    $buttons.eq(1).on('click',function(){
-        console.log(current)    
-        $slides.css({transform:'translateX(-800px)'})
-        current = 1
-    })
-    $buttons.eq(2).on('click',function(){
-        console.log(current)    
-        $slides.css({transform:'translateX(-1200px)'})
-        current = 2
-    })
-    $buttons.eq(3).on('click',function(){
-        if(current == 0){
-            console.log('这是从第一张到最后一张')
-            $slides.css({transform:'translateX(0)'}).one('transitionend',function(){
-                $slides.hide()
-                $slides.offset()
-                $slides.css({transform:'translateX(-1600px)'}).show()
-            })       
-        }else{
-            $slides.css({transform:'translateX(-1600px)'})
-        }
-        current = 3
-    })
+function bindEvents(){  
+    $('#buttonWrapper').on('click','button',function(e){ //事件委托，点击$('#buttonWrapper')里的button时执行function(e)
+        let $button = $(e.currentTarget) //点击的按钮
+        let index = $button.index() //点击的按钮在数组中的序号
+        gotoSlide(index)
+})
+}
+
+//把去到每一张图片的功能分离出来很重要
+function gotoSlide(index){
+    if(current === $buttons.length-1 && index === 0){
+        //从最后一张去第一张
+        $slides.css({transform:`translateX(${-($buttons.length+1)*400}px)`}).one('transitionend',function(){
+            $slides.hide()
+            $slides.offset()
+            $slides.css({transform:'translateX(-400px)'}).show()
+        })       
+    }else if(current === 0 && index === $buttons.length-1){
+        //从第一张去最后一张
+        $slides.css({transform:'translateX(0)'}).one('transitionend',function(){
+            $slides.hide()
+            $slides.offset()
+            $slides.css({transform:`translateX(${-$buttons.length*400}px)`}).show()
+        })             
+    }else{
+        $slides.css({transform:`translateX(${-(index+1)*400}px)`})//不要把px括进去哦
+    }
+    current = index //！！！不要忘了赋值
 }
