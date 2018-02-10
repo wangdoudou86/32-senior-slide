@@ -6,6 +6,24 @@ let $images = $slides.children('img')
 makefakeSlides()
 $slides.css({transform:'translateX(-400px)'})//真的第一张位置在-400px处
 bindEvents()
+$('#previous').on('click',function(){
+    gotoSlide(current-1)
+})
+$(next).on('click',function(){
+    gotoSlide(current+1)
+})
+let timer = setInterval(function(){
+    gotoSlide(current+1)
+},2000)
+$('.window').on('mouseenter',function(){
+    window.clearInterval(timer)
+})
+$('.window').on('mouseleave',function(){
+    timer = setInterval(function(){
+        gotoSlide(current+1)
+    },2000)
+})
+
 
 
 
@@ -27,6 +45,12 @@ function bindEvents(){
 
 //把去到每一张图片的功能分离出来很重要
 function gotoSlide(index){
+    if(index>$buttons.length-1){
+        index = 0
+    }else if(index < 0){
+        index = $buttons.length-1
+    }
+
     if(current === $buttons.length-1 && index === 0){
         //从最后一张去第一张
         $slides.css({transform:`translateX(${-($buttons.length+1)*400}px)`}).one('transitionend',function(){
